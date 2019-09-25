@@ -17,7 +17,7 @@ require 'database.php';
 $story_id = (int)$_GET['story_id'];
 // echo $story_id;
 
-$stmt = $mysqli->prepare("select * from stories where stories.story_id = (?)");
+$stmt = $mysqli->prepare("select from stories where stories.story_id = (?)");
 if(!$stmt){
     printf("Query Prep Failed: %s\n", $mysqli->error);
     exit;
