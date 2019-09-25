@@ -15,9 +15,37 @@
 <?php
 // Check Errors
 session_start();
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(E_ALL);
+
+
+require 'database.php';
+
+$u = $_SESSION['newuser'];
+$p = $_SESSION['newpassword'];
+$p = password_hash($p);
+
+
+$stmt = $mysqli->prepare("insert into userinfo (username, password) values (?, ?)");
+if(!$stmt){
+	printf("Query Prep Failed: %s\n", $mysqli->error);
+	exit;
+}
+
+$stmt->bind_param('ss', $u, $p);
+
+$stmt->execute();
+
+
+$stmt2 = $mysqli->prepare(sprintf("grant select,insert,update,delete on allusers.* to %s@'localhost'",$u));
+$stmt3 = $mysqli->prepare('flush privileges');
+
+$stmt2->execute();
+$stmt3->execute();
+
+$stmt->close();
+$stmt2->close();
+$stmt3->close();
+
+header("Location: mainpaige.php");
 
 
 ?>

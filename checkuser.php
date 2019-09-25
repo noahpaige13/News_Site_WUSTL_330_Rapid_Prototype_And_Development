@@ -9,16 +9,9 @@
 <body>
     
 <?php 
-// Check Errors
-// session_start();
-// session_regenerate_id(true); 
-// ini_set('display_errors',1);
-// ini_set('display_startup_errors',1);
-// error_reporting(E_ALL);
+session_start();
 
-$userexist = (int)-1;
 $username = (string)$_GET["username"];
-
 $_SESSION["username"] = String($username);
 
 require 'database.php';

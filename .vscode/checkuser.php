@@ -20,6 +20,7 @@ $userexist = (int)-1;
 $username = (string)$_GET["username"];
 
 $_SESSION["username"] = String($username);
+$_Session['password'] = String ($passowrd);
 
 require 'database.php';
 
