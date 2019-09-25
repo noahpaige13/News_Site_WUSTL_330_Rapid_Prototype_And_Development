@@ -9,7 +9,7 @@
 <body>
 
     <!-- Log In Form -->
-    <form name = "username" action ="checkuser.php" method = "GET" >
+    <form name = "username" action ="checkuser.php" method = "POST" >
         Username: <input type = "text" name = "username"/>
         Password: <input type = "text" name = "password"/>
         <input type = "submit" value = "Log In"/>
@@ -18,7 +18,7 @@
 
 
     <!-- New User Form -->
-    <form name = "newuser" action ="newuser.php" method = "GET" >
+    <form name = "newuser" action ="newuser.php" method = "POST" >
         Create New User: <input type = "text" name = "newuser"/>
         New User Password: <input type = "text" name = "newpassword"/>
         <input type = "submit" value = "Create New User"/>

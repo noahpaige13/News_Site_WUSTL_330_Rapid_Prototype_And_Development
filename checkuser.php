@@ -1,3 +1,6 @@
+<?php 
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,38 +12,45 @@
 <body>
     
 <?php 
-session_start();
 
-$username = (string)$_GET["username"];
-$_SESSION["username"] = String($username);
 
 require 'database.php';
 
-$stmt = $mysqli->prepare("select username from userinfo where username = $username");
-if(!$stmt){
-	printf("Query Prep Failed: %s\n", $mysqli->error);
-	exit;
-}
+// Use a prepared statement
+$stmt = $mysqli->prepare("SELECT COUNT(*), username, password FROM userinfo WHERE username=?");
 
+// Bind the parameter
+$user = $_POST['username'];
+$stmt->bind_param('s', $user);
 $stmt->execute();
 
-$result = $stmt->get_result();
-$_SESSION["result"] = $result;
+// Bind the results
+$stmt->bind_result($cnt, $user_id, $pwd_hash);
+$stmt->fetch();
 
-$stmt->close();
+$pwd_guess = $_POST['password'];
+// Compare the submitted password to the actual password hash
 
-if (isset($result))
-{
-    header("Location: mainpaige.php");
+if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
+	// Login succeeded!
+	$_SESSION['user_id'] = $user_id;
+    // Redirect to your target page
+    // header("Location: mainpaige.php");
+    ?>
+
+    <a href = "http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/mainpage.php"> Login Successful! Continue to News Site </a>
+<?php
+} else{
+    // Login failed; redirect back to the login screen
+    // header("Location: newhome.php");
+    ?>
+    <a href = "http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/newhome.php"> Login Failed! Return to Homepage </a>
+<?php
 }
 
-else{
-    print htmlentities("No user found!");
-}
 ?>
 
 
-<a href = "http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/newhome.php"> Return to Homepage </a>
 
 
 

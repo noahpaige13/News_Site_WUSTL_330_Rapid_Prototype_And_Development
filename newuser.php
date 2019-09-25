@@ -1,10 +1,13 @@
+<?php 
+session_start();
+?>
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>User Sign Up</title>
 </head>
 <body>
     
@@ -14,14 +17,14 @@
 
 <?php
 // Check Errors
-session_start();
-
+$driver = new mysqli_driver();
+$driver->report_mode = MYSQLI_REPORT_ALL;
 
 require 'database.php';
 
-$u = $_SESSION['newuser'];
-$p = $_SESSION['newpassword'];
-$p = password_hash($p);
+$u = $_POST['newuser'];
+$p = $_POST['newpassword'];
+$p = password_hash($p, PASSWORD_BCRYPT);
 
 
 $stmt = $mysqli->prepare("insert into userinfo (username, password) values (?, ?)");
@@ -33,22 +36,24 @@ if(!$stmt){
 $stmt->bind_param('ss', $u, $p);
 
 $stmt->execute();
+$stmt->close();
 
-
-$stmt2 = $mysqli->prepare(sprintf("grant select,insert,update,delete on allusers.* to %s@'localhost'",$u));
-$stmt3 = $mysqli->prepare('flush privileges');
+$stmt2 = $mysqli->prepare("grant select,insert,update,delete on allusers.* to $u@'localhost' ");
+// $stmt2->bind_param('s', $u);
 
 $stmt2->execute();
-$stmt3->execute();
-
-$stmt->close();
 $stmt2->close();
+
+$stmt3 = $mysqli->prepare('flush privileges');
+
+$stmt3->execute();
 $stmt3->close();
 
-header("Location: mainpaige.php");
-
+// header("Location: mainpage.php");
+// http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/
 
 ?>
 
+<a href = http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/mainpage.php> Login Succesful! Go to News Site </a>
 
 </html>
