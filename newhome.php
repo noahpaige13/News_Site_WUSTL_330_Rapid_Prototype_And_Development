@@ -24,6 +24,14 @@
         <input type = "submit" value = "Create New User"/>
 
     </form>
+
+    <!-- Delete User Form -->
+    <form name = "deluser" action ="deleteuser.php" method = "POST" >
+        Delete Username; <input type = "text" name = "deluser"/>
+        User's Password: <input type = "text" name = "delpassword"/>
+        <input type = "submit" value = "Delete User"/>
+
+    </form>
     
 
 
