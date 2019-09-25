@@ -12,6 +12,9 @@ session_start();
 
 <?php
 require 'database.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Use a prepared statement
 $stmt = $mysqli->prepare("SELECT COUNT(*), username, password FROM userinfo WHERE username=?");
@@ -26,30 +29,18 @@ $stmt->execute();
 $stmt->bind_result($cnt, $user_id, $pwd_hash);
 $stmt->fetch();
 
+
 $pwd_guess = $_POST['delpassword'];
 // Compare the submitted password to the actual password hash
+$stmt->close();
 
 if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
 	// Login succeeded!
     $_SESSION['user_id'] = $user_id;
     
-    // DELETE USER POSTS
-    
-    $stmt = $mysqli->prepare("delete from stories where username = (?)");
-    if(!$stmt){
-	    printf("Query Prep Failed: %s\n", $mysqli->error);
-	    exit;
-    }   
-
-    $stmt->bind_param('s', $user);
-
-    $stmt->execute();
-    $stmt->close();
-    // echo ('Done');
-
 
     // DELTE USER COMMENTS
-    $stmt = $mysqli->prepare("delete from comments where username = (?)");
+    $stmt = $mysqli->prepare("delete from comments where username=?");
     if(!$stmt){
 	    printf("Query Prep Failed: %s\n", $mysqli->error);
 	    exit;
@@ -59,18 +50,39 @@ if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
 
     $stmt->execute();
     $stmt->close();
+
+
+    // DELETE USER POSTS
+    
+    $stmt2 = $mysqli->prepare("delete from stories where username=?");
+    if(!$stmt2){
+	    printf("Query Prep Failed: %s\n", $mysqli->error);
+	    exit;
+    }   
+
+    $stmt2->bind_param('s', $user);
+
+    $result = $stmt2->execute();
+    if($result){
+        printf("Query Failed: %s\n", $mysqli->error);
+    }
+    $stmt2->close();
+    // echo ('Done');
+
+
+
     // echo ('Done');
     // DELETE FROM USERINFO
-    $stmt = $mysqli->prepare("delete from userinfo where username = (?)");
-    if(!$stmt){
+    $stmt3 = $mysqli->prepare("delete from userinfo where username=?");
+    if(!$stmt3){
 	    printf("Query Prep Failed: %s\n", $mysqli->error);
 	    exit;
     }   
 
-    $stmt->bind_param('s', $user);
+    $stmt3->bind_param('s', $user);
 
-    $stmt->execute();
-    $stmt->close();
+    $stmt3->execute();
+    $stmt3->close();
     // echo ('Done');
     session_destroy();
 
