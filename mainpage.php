@@ -9,6 +9,8 @@
 </head>
 <body>
 
+    
+
 <?php    
 require 'database.php';
 // add and view stories -- include usr for delete privs
