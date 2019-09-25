@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,36 +12,72 @@
 </head>
 <body>
 
-<?php    
-require 'database.php';
-// add and view stories -- include usr for delete privs
-// 
-$user = $_POST['user'];
-$title = $_POST['title'];
-$story = $_POST['story'];
 
-$stmt = $mysqli->prepare("insert into stories (user, title, story) values (?, ?, ?)");
+<a href = addstory.php> Submit New Story (Note: Only Passes if Logged In!)</a>
+
+<div id = "logout">
+        <form name = "logout" action = "logout.php" method = "GET">
+            <input type = "submit" value = "Log Out" />
+        </form>
+</div>
+<br>
+
+
+<?php    
+
+require 'database.php';
+// View Stories on Main page
+
+
+$stmt = $mysqli->prepare("select title, username, story_id from stories");
 if(!$stmt){
 	printf("Query Prep Failed: %s\n", $mysqli->error);
 	exit;
 }
 
-$stmt->bind_param('sss', $user, $title, $story);
+// $stmt->bind_param('sss', $user, $title, $story);
 
 $stmt->execute();
 
-$stmt->bind_result($user, $title, $story);
+$stmt->bind_result($title, $user, $story_id);
 
 echo "<ul>\n";
 while($stmt->fetch()){
-	printf("\t<li>%s %s</li>\n",
-		htmlspecialchars($user),
-        htmlspecialchars($title),
-        htmlspecialchars($story)
-	);
-}
-echo "</ul>\n";
+    $link = 'http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/readstory.php?story_id='.$story_id;
+    $dellink ='http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/deletestory.php?story_id='.$story_id;
+    $editlink ='http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/editstory.php?story_id='.$story_id;
+    
+    printf("\t<li> %s <br> By: %s <br> <br> </li>",
+		htmlspecialchars($title),
+        htmlspecialchars($user));
 
+    // $_SESSION['story_id'] = $story_id;
+
+    // CHECK IF YOURE THE CREATOR
+
+    if($user == $_SESSION['user_id']){
+        
+        // <!-- Edit Article -->
+        printf('<a href = "%s" > Edit Article </a> <br>', $editlink);
+
+        // <!-- Delete Article -->
+        printf('<a href = "%s" > Delete Article </a> <br>', $dellink);
+
+       
+    }
+
+    // Otherwise Just Read
+    // $_SESSION['story_id'] = $story_id;
+    // $n = (int)$_SESSION['story_id'];
+
+
+    printf('<a href = "%s" > Read Article </a> <br>', $link);
+
+    
+    echo "<br><br>";
+
+}
+echo "</ul><br><br>";
 $stmt->close();
 
 
@@ -46,6 +85,9 @@ $stmt->close();
 
 ?>
 </body>
+
+
+
 </html>
 
 <!-- database: allusers

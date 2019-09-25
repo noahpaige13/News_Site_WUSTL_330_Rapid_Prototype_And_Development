@@ -24,6 +24,7 @@ require 'database.php';
 
 $u = $_POST['newuser'];
 $p = $_POST['newpassword'];
+$_SESSION['user_id'] = $u;
 $p = password_hash($p, PASSWORD_BCRYPT);
 
 
