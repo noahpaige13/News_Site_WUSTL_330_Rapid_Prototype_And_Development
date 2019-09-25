@@ -8,6 +8,9 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 </head>
 <body>
     
@@ -59,8 +62,8 @@ $stmt->bind_result($username, $comment, $comment_id);
 
 echo "<ul>\n";
 while($stmt->fetch()){
-    $dellink ='http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/deletecom.php?story_id='.$comment_id;
-    $editlink ='http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/editcom.php?story_id='.$comment_id;
+    $dellink ='http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/delcom.php?comment_id='.$comment_id;
+    $editlink ='http://ec2-user@ec2-18-217-184-126.us-east-2.compute.amazonaws.com/~noahpaige/module3_group/editcom.php?comment_id='.$comment_id;
     
 
     printf("\t<li> <pre> %s : </pre>   %s <br><br> </li>",
@@ -70,13 +73,13 @@ while($stmt->fetch()){
 
 echo "</ul>";
 
-if($user == $_SESSION['user_id']){
-    // <!-- Edit Comment -->
-    printf('<a href = "%s" > Edit Comment </a> <br>', $editlink);
+    if($username == $_SESSION['pu']){
+        // <!-- Edit Comment -->
+        printf('<a href = "%s" > Edit Comment </a> <br>', $editlink);
 
-    // <!-- Delete Comment -->
-    printf('<a href = "%s" > Delete Article </a> <br>', $dellink);
-}
+        // <!-- Delete Comment -->
+        printf('<a href = "%s" > Delete Comment </a> <br>', $dellink);
+    }
 }
 
 ?>

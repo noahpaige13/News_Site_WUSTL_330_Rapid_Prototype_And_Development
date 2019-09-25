@@ -22,9 +22,10 @@ $driver->report_mode = MYSQLI_REPORT_ALL;
 
 require 'database.php';
 
-$u = $_POST['newuser'];
-$p = $_POST['newpassword'];
+$u = (string)$_POST['newuser'];
+$p = (string)$_POST['newpassword'];
 $_SESSION['user_id'] = $u;
+$_SESSION['pu'] = $u;
 $p = password_hash($p, PASSWORD_BCRYPT);
 
 

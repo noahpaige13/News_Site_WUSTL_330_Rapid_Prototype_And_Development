@@ -17,7 +17,7 @@ require 'database.php';
 $stmt = $mysqli->prepare("SELECT COUNT(*), username, password FROM userinfo WHERE username=?");
 
 // Bind the parameter
-$user = $_POST['username'];
+$user = (string)$_POST['deluser'];
 $stmt->bind_param('s', $user);
 $stmt->execute();
 
@@ -26,11 +26,15 @@ $stmt->execute();
 $stmt->bind_result($cnt, $user_id, $pwd_hash);
 $stmt->fetch();
 
+$pwd_guess = $_POST['delpassword'];
+// Compare the submitted password to the actual password hash
+
 if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
 	// Login succeeded!
     $_SESSION['user_id'] = $user_id;
     
     // DELETE USER POSTS
+    
     $stmt = $mysqli->prepare("delete from stories where username = (?)");
     if(!$stmt){
 	    printf("Query Prep Failed: %s\n", $mysqli->error);
@@ -41,6 +45,7 @@ if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
 
     $stmt->execute();
     $stmt->close();
+    // echo ('Done');
 
 
     // DELTE USER COMMENTS
@@ -54,7 +59,7 @@ if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
 
     $stmt->execute();
     $stmt->close();
-
+    // echo ('Done');
     // DELETE FROM USERINFO
     $stmt = $mysqli->prepare("delete from userinfo where username = (?)");
     if(!$stmt){
@@ -66,6 +71,8 @@ if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
 
     $stmt->execute();
     $stmt->close();
+    // echo ('Done');
+    session_destroy();
 
     ?>
 

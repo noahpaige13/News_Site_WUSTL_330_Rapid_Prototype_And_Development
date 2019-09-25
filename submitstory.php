@@ -28,9 +28,9 @@
         require 'database.php';
         // add and view stories -- include usr for delete privs
         // 
-        $user = $_SESSION['user_id'];
-        $title = $_POST['title'];
-        $story = $_POST['story'];
+        $user = (string)$_SESSION['user_id'];
+        $title = (string)$_POST['title'];
+        $story = (string)$_POST['story'];
 
         $stmt = $mysqli->prepare("insert into stories (username, title, story) values (?, ?, ?)");
         if(!$stmt){

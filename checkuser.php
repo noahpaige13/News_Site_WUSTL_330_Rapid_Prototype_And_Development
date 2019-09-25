@@ -20,7 +20,7 @@ require 'database.php';
 $stmt = $mysqli->prepare("SELECT COUNT(*), username, password FROM userinfo WHERE username=?");
 
 // Bind the parameter
-$user = $_POST['username'];
+$user = (string)$_POST['username'];
 $stmt->bind_param('s', $user);
 $stmt->execute();
 
@@ -33,7 +33,8 @@ $pwd_guess = $_POST['password'];
 
 if($cnt == 1 && password_verify($pwd_guess, $pwd_hash)){
 	// Login succeeded!
-	$_SESSION['user_id'] = $user_id;
+    $_SESSION['user_id'] = $user_id;
+    $_SESSION['pu'] = $user_id;
     // Redirect to your target page
     // header("Location: mainpaige.php");
     ?>

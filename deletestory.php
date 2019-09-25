@@ -15,7 +15,7 @@ session_start();
 
 
 require 'database.php';
-$del_id = (int)$_GET['story_id'];
+$del_id = $_GET['story_id'];
 
 
 $stmt = $mysqli->prepare("delete from stories where story_id = (?)");
